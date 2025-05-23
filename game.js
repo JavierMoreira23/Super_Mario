@@ -39,7 +39,7 @@ function preload() {
         { frameWidth: 18, frameHeight: 16 }
     )
 
-    
+    this.load.audio('gameover', 'assets/sound/music/gameover.mp3')
 }
 
 function create() {
@@ -72,6 +72,9 @@ function create() {
 }
 
 function update() {
+    if(this.mario.isDead){
+        return
+    }
     if (this.keys.left.isDown){
         this.mario.anims.play('mario-run',true)
         this.mario.x -=2
@@ -94,5 +97,14 @@ function update() {
         this.mario.isDead = true
         this.mario.anims.play('mario-dead')
         this.mario.setCollideWorldBounds(false)
+        this.sound.add('gameover',{ volume: 0.3}).play() 
+
+        setTimeout(() => {
+           this.mario.setVelocityY(-350)
+        }, 100)
+
+        setTimeout(() => {
+           this.scene.restart()
+        }, 2000)
     }
 }
