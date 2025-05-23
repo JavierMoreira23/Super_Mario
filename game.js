@@ -5,6 +5,13 @@ const config ={
     height: 244,
     backgroundColor: '#049cd8',
     parent: 'game',
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 300 },
+            debug: false
+        }
+    },
     scene: {
         preload,
         create,
@@ -32,12 +39,7 @@ function preload() {
         { frameWidth: 18, frameHeight: 16 }
     )
 
-    this.anims.create({
-        key : 'mario-run',
-        frames: this.anims.generateFrameNumbers(
-            'mario', { start: 0, end: 4}),
-            repeat: -1,
-    })
+    
 }
 
 function create() {
@@ -46,16 +48,45 @@ function create() {
     this.add.tileSprite(0, config.height-32, config.width,32, 'floorbricks')
     .setOrigin(0, 0)
     
-    this.mario = this.add.sprite(50, 210, 'mario').setOrigin(0, 1)
+    //this.mario = this.add.sprite(50, 210, 'mario').setOrigin(0, 1)
+     this.mario = this.physics.add.sprite(50, 210, 'mario').setOrigin(0, 1).setGravityY(300)
+    this.anims.create({
+        key : 'mario-run',
+        frames: this.anims.generateFrameNumbers(
+            'mario', { start: 3, end: 2}),
+            frameRate: 12,
+            repeat: -1
+    })
+
+    this.anims.create({
+        key : 'mario-idle',
+        frames: [{ key: 'mario', frame: 0 }]
+    })
+
+    this.anims.create({
+        key : 'mario-jump',
+        frames: [{ key: 'mario', frame: 5 }]
+    })
+
 
     this.keys = this.input.keyboard.createCursorKeys();
 }
 
 function update() {
     if (this.keys.left.isDown){
+        this.mario.anims.play('mario-run',true)
         this.mario.x -=2
-
+        this.mario.flipX = true
     } else if (this.keys.right.isDown){
         this.mario.x +=2
+        this.mario.anims.play('mario-run',true) 
+        this.mario.flipX = false
+    } else {
+        this.mario.anims.play('mario-idle',true)
+    }
+
+    if(this.keys.up.isDown){
+        this.mario.anims.play('mario-jump',true)
+        this.mario.y -=5
     }
 }
