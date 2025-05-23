@@ -1,4 +1,4 @@
-
+import { createAnimations } from './animations.js'
 const config ={
     type: Phaser.AUTO,
     width: 256,
@@ -64,26 +64,9 @@ function create() {
     this.physics.add.collider(this.mario, this.floor)
 
     this.cameras.main.setBounds(0, 0, 2000, config.height)
-    this.cameras.main.startFollow(this.mario)       
-
-    this.anims.create({
-        key : 'mario-run',
-        frames: this.anims.generateFrameNumbers(
-            'mario', { start: 3, end: 2}),
-            frameRate: 12,
-            repeat: -1
-    })
-
-    this.anims.create({
-        key : 'mario-idle',
-        frames: [{ key: 'mario', frame: 0 }]
-    })
-
-    this.anims.create({
-        key : 'mario-jump',
-        frames: [{ key: 'mario', frame: 5 }]
-    })
-
+    this.cameras.main.startFollow(this.mario)   
+    
+    createAnimations(this)
 
     this.keys = this.input.keyboard.createCursorKeys();
 }
@@ -105,5 +88,11 @@ function update() {
         this.mario.setVelocityY(-295)
         this.mario.anims.play('mario-jump',true)
     
+    }
+
+    if(this.mario.y >= config.height){
+        this.mario.isDead = true
+        this.mario.anims.play('mario-dead')
+        this.mario.setCollideWorldBounds(false)
     }
 }
